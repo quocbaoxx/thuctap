@@ -10,4 +10,6 @@ public class ThuctapApplication {
 		SpringApplication.run(ThuctapApplication.class, args);
 	}
 ////test
+
+	//Pull
 }
