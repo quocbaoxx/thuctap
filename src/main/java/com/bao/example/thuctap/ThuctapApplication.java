@@ -9,7 +9,7 @@ public class ThuctapApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ThuctapApplication.class, args);
 	}
-////test
 
-	//Pull
+
+//	Cách sử dụng gitgigit
 }
