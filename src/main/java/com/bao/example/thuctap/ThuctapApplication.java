@@ -11,7 +11,7 @@ public class ThuctapApplication {
 	}
 
 
-//	Cách sử dụng gitgigit bao test
+//	Cách sử dụng gitgigit bao test (baotq2 add test)
 
 	// push về file 
 }
