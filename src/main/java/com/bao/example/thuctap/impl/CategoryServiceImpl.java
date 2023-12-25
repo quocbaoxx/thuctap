@@ -41,18 +41,22 @@ public class CategoryServiceImpl  implements CategoryService {
     public List<CategoryDTO> getalldatabase() {
 
         List<CategoryDTO> categoryDTOS = new ArrayList<>();
+
+        //sort with parentID
         List<Category> categoryList = categoryRepository.findAll();
 
         //tạo để lưu trữ con
+
         Map<Integer, CategoryDTO> categoryDTOMap = new HashMap<>();
+
+        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();//int laf cha con lisst la con
+
+        String parentID = null;
+
 
         for (Category category : categoryList){
             CategoryDTO categoryDTO =  modelMapper.map(category, CategoryDTO.class);
-//            categoryDTO.setId(category.getId());
-//            categoryDTO.setName(category.getName());
-//            categoryDTO.setParentId(category.getParentId());
-//            categoryDTO.setStatus(category.getStatus());
-//            categoryDTO.setDescription(category.getDescription());
+
 
             categoryDTO.setCategoryDTOS(new ArrayList<>());
 
@@ -60,7 +64,7 @@ public class CategoryServiceImpl  implements CategoryService {
 
             if (category.getParentId() !=  null ){
                 CategoryDTO categoryDTO1 =  categoryDTOMap.get(category.getParentId());
-                if (categoryDTO1 != null) {
+                if (categoryDTO1 != null) { //
                     categoryDTO1.getCategoryDTOS().add(categoryDTO);
                 }
             }else {
@@ -116,14 +120,18 @@ public class CategoryServiceImpl  implements CategoryService {
     @Override
     public List<CategoryDTO> getRecursive(String name) {
 
+
         List<CategoryDTO> categoryDTOS = new ArrayList<>();
         List<Category> allCategories;
+        //return list DTO
         if (!name.isEmpty()){
             allCategories = categoryRepository.findByName(name);
         }else {
             allCategories = categoryRepository.findAll();
         }
         for (Category category: allCategories){
+
+            //return list DTO
             List<Category> childCategories = categoryRepository.findByParentId(category.getId());
 
             CategoryDTO categoryDTO = new CategoryDTO();
