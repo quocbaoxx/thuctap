@@ -9,7 +9,6 @@ import com.bao.example.thuctap.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -117,51 +116,71 @@ public class CategoryServiceImpl  implements CategoryService {
 
 
 
+//    @Override
+//    public List<CategoryDTO> getRecursive(String name) {
+//
+//
+//        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+//        List<Category> allCategories;
+//        //return list DTO
+//        if (!name.isEmpty()){
+//            allCategories = categoryRepository.findByName(name);
+//        }else {
+//            allCategories = categoryRepository.findAll();
+//        }
+//        for (Category category: categoryDTOS){
+//
+//            //return list DTO
+//            List<CategoryDTO> childCategories = categoryRepository.findByParentIdDTO(category.getId());
+//
+//            CategoryDTO categoryDTO = new CategoryDTO(category.getId(),category.getDescription(),category.getStatus(),category.getName());
+//
+//               List<CategoryDTO>  categoryDTOList = new ArrayList<>();
+//
+//                for (CategoryDTO child : childCategories) {
+//                    CategoryDTO childDTO = new CategoryDTO(child.getId(), child.getDescription(), child.getStatus(), child.getDescription(),child.getParentId());
+//                    categoryDTOList.add(childDTO);
+//                 }
+//
+//                categoryDTO.setCategoryDTOS(categoryDTOList);
+//                categoryDTOS.add(categoryDTO);
+//
+//        }
+//
+//
+//        return categoryDTOS;
+//    }
+
     @Override
     public List<CategoryDTO> getRecursive(String name) {
 
-
-        List<CategoryDTO> categoryDTOS = new ArrayList<>();
-        List<Category> allCategories;
-        //return list DTO
+        List<CategoryDTO> categoryDTOS ;
         if (!name.isEmpty()){
-            allCategories = categoryRepository.findByName(name);
+            categoryDTOS = categoryRepository.findByNameDTO(name);//không nhận đươc name
         }else {
-            allCategories = categoryRepository.findAll();
+            categoryDTOS = categoryRepository.fineAllDTO();
         }
-        for (Category category: allCategories){
+        for (CategoryDTO category: categoryDTOS){
+            List<CategoryDTO> childCategories = categoryRepository.findByParentIdDTO(category.getId());
 
-            //return list DTO
-            List<Category> childCategories = categoryRepository.findByParentId(category.getId());
+            CategoryDTO categoryDTO = new CategoryDTO(category.getId(),category.getDescription(),category.getStatus(),category.getName());
 
-            CategoryDTO categoryDTO = new CategoryDTO();
-            categoryDTO.setId(category.getId());
-            categoryDTO.setDescription(category.getDescription());
-            categoryDTO.setName(category.getName());
-            categoryDTO.setStatus(category.getStatus());
 
-               List<CategoryDTO>  categoryDTOList = new ArrayList<>();
+            List<CategoryDTO>  categoryDTOList = new ArrayList<>();
 
-                for (Category child : childCategories) {
-                    CategoryDTO childDTO = new CategoryDTO();
-                    childDTO.setId(child.getId());
-                    childDTO.setParentId(child.getParentId());
-                    childDTO.setStatus(child.getStatus());
-                    childDTO.setName(child.getName());
-                    childDTO.setDescription(child.getDescription());
-
+            for (CategoryDTO child : childCategories) {
+                CategoryDTO childDTO = new CategoryDTO(child.getId(), child.getDescription(), child.getStatus(), child.getDescription(),child.getParentId());
                     categoryDTOList.add(childDTO);
-                 }
+            }
 
-                categoryDTO.setCategoryDTOS(categoryDTOList);
-                categoryDTOS.add(categoryDTO);
+            categoryDTO.setCategoryDTOS(categoryDTOList);
+            categoryDTOS.add(categoryDTO);
 
         }
 
 
         return categoryDTOS;
     }
-
 
 
 

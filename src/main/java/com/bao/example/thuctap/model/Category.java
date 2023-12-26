@@ -25,14 +25,6 @@ public class Category  extends BaseModel{
     @Column(name = "parentID", nullable = true)
     private Integer  parentId;
 
-//
-//    @ManyToOne
-//    @JoinColumn(name = "parentID")
-//    private Category parent;
-//
-//    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-//    private List<Category> children;
-
 
 
 }

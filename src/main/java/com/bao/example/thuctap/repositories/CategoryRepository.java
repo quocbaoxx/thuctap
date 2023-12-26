@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Repository
@@ -41,7 +40,23 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
     @Query(value = "SELECT * FROM  tblcategory c ORDER BY c.name ASC, c.status DESC", nativeQuery = true)
     List<Category> getSortByName();
 
-    List<Category> findByName(String name);
+
+    @Query("select  new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name,c.status, c.description,c.parentId)" +
+            "from Category  c ")
+    List<CategoryDTO> fineAllDTO();
+
+
+    @Query("select  new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name,c.status, c.description,c.parentId)" +
+            "from Category  c " +
+            "where  c.name = :name")
+    List<CategoryDTO> findByNameDTO(@Param("name") String name );
+
+    List<CategoryDTO> findByName(String name);
+
+    @Query("select  new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name,c.status, c.description,c.parentId)" +
+            "from Category  c " +
+            "where  c.parentId = :parentId")
+    List<CategoryDTO> findByParentIdDTO(@Param("parentId") Integer parentId );
 
     List<Category> findByParentId(Integer parentId);
 
