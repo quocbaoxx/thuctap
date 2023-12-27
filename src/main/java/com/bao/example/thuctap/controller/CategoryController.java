@@ -47,7 +47,7 @@ public class CategoryController {
 //    Lấy all catergory theo dạng cha con
     @GetMapping("/getallrecursive")
     public ResponseEntity<List<CategoryDTO>> getAllRecursive(){
-        List<CategoryDTO> categoryList = categoryService.getAllRecursive();
+        List<CategoryDTO> categoryList = categoryService.getallrecursive();
         return  ResponseEntity.ok(categoryList);
     }
 

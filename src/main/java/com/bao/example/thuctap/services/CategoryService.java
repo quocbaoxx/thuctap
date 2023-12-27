@@ -31,7 +31,7 @@ public interface CategoryService {
 
     ResponseEntity<String> saveCategoryWithChildren(CategoryDTO categoryDTO);
 
-    List<CategoryDTO> getAllRecursive();
+    List<CategoryDTO> getallrecursive();
 
     List<CategoryDTO> getalldatabase();
 

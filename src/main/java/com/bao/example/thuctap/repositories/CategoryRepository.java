@@ -46,10 +46,13 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
     List<CategoryDTO> fineAllDTO();
 
 
-    @Query("select  new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name,c.status, c.description,c.parentId)" +
-            "from Category  c " +
-            "where  c.name = :name")
-    List<CategoryDTO> findByNameDTO(@Param("name") String name );
+
+
+
+    @Query("SELECT new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name, c.status, c.description, c.parentId) " +
+            "FROM Category c" +
+            " WHERE c.name = :name")
+    List<CategoryDTO> findByNameDTO(@Param("name") String name);
 
     List<CategoryDTO> findByName(String name);
 
@@ -57,6 +60,9 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
             "from Category  c " +
             "where  c.parentId = :parentId")
     List<CategoryDTO> findByParentIdDTO(@Param("parentId") Integer parentId );
+
+
+
 
     List<Category> findByParentId(Integer parentId);
 
@@ -75,4 +81,8 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
     List<Category> findWithPagination(int offset, int size);
     @Query(value = "SELECT COUNT(*) FROM tblcategory", nativeQuery = true)
     long countTotalCategories();
+
+    @Query(value = "SELECT c FROM Category c " +
+            "order by c.parentId ,c.id")
+    List<Category> findAllSortParentId();
 }

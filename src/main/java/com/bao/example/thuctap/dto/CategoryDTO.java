@@ -25,11 +25,11 @@ public class CategoryDTO{
 
     private String description;
 
-    private int parentId;
+    private Integer parentId;
 
     private List<CategoryDTO> categoryDTOS = new ArrayList<>();
 
-    public CategoryDTO(Integer id, String name, Boolean status, String description, int parentId) {
+    public CategoryDTO(Integer id, String name, Boolean status, String description, Integer parentId) {
         this.id = id;
         this.name = name;
         this.status = status;
