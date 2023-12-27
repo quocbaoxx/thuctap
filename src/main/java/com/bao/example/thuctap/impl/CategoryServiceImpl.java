@@ -91,13 +91,7 @@ public class CategoryServiceImpl  implements CategoryService {
         List<CategoryDTO> temporaryList = new ArrayList<>();
 
         for (Category category : categoryList) {
-            CategoryDTO categoryDTO = new CategoryDTO();
-            categoryDTO.setId(category.getId());
-            categoryDTO.setParentId(category.getParentId());
-            categoryDTO.setStatus(category.getStatus());
-            categoryDTO.setName(category.getName());
-            categoryDTO.setDescription(category.getDescription());
-
+            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
             if (category.getParentId() == null) {
                 temporaryList.add(categoryDTO);
             } else {
@@ -156,9 +150,7 @@ public class CategoryServiceImpl  implements CategoryService {
         return categoryDTOS;
     }
 
-
-
-
+    
 //    @Override
 //    public List<CategoryDTO> getRecursive(String name) {
 //
