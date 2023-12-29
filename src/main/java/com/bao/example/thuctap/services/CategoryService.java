@@ -32,7 +32,7 @@ public interface CategoryService {
     ResponseEntity<String> saveCategoryWithChildren(CategoryDTO categoryDTO);
 
     List<CategoryDTO> getallrecursive();
-
+    List<CategoryDTO> getallrecursivestream();
     List<CategoryDTO> getalldatabase();
 
     ResponseBase getPaginatedData( int limit, int offset);

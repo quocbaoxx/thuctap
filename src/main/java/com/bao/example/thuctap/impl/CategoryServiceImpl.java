@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl  implements CategoryService {
@@ -77,38 +78,90 @@ public class CategoryServiceImpl  implements CategoryService {
 //            }
 //            categoryDTOS.add(categoryDTO);
 //        }
-//
-//
 //        return categoryDTOS;
 //    }
 
+
+
+//     @Override
+//    public List<CategoryDTO> getalldatabase() {
+//        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+//        List<Category> categoryList = categoryRepository.findAllSortParentId();
+//
+//        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();
+//
+//        List<CategoryDTO> temporaryList = new ArrayList<>();
+//
+//        for (Category category : categoryList) {
+//            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+//            if (category.getParentId() == null) {
+//                temporaryList.add(categoryDTO);
+//            } else {
+////                if (!categoryParent.containsKey(category.getParentId())) {
+////                    categoryParent.put(category.getParentId(), new ArrayList<>());
+////                }
+////                categoryParent.get(category.getParentId()).add(categoryDTO);
+//              categoryParent.computeIfAbsent(category.getParentId(), k -> new ArrayList<>()).add(categoryDTO);
+//            }
+//        }
+//        for (CategoryDTO categoryDTO : temporaryList) {
+//            categoryDTO.setCategoryDTOS(categoryParent.get(categoryDTO.getId()));
+//            categoryDTOS.add(categoryDTO);
+//        }
+//        return categoryDTOS;
+//    }
+
+
+    @Override
     public List<CategoryDTO> getalldatabase() {
-        List<CategoryDTO> categoryDTOS = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllSortParentId();
 
-        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();
-
-        List<CategoryDTO> temporaryList = new ArrayList<>();
-
-        for (Category category : categoryList) {
-            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
-            if (category.getParentId() == null) {
-                temporaryList.add(categoryDTO);
-            } else {
-//                if (!categoryParent.containsKey(category.getParentId())) {
-//                    categoryParent.put(category.getParentId(), new ArrayList<>());
-//                }
-//                categoryParent.get(category.getParentId()).add(categoryDTO);
-              categoryParent.computeIfAbsent(category.getParentId(), k -> new ArrayList<>()).add(categoryDTO);
-            }
-        }
-        for (CategoryDTO categoryDTO : temporaryList) {
-            categoryDTO.setCategoryDTOS(categoryParent.get(categoryDTO.getId()));
-            categoryDTOS.add(categoryDTO);
-        }
-        return categoryDTOS;
+        return categoryList.stream()
+                .filter(category -> category.getParentId() == null)
+                .map(category  -> mapCategoryToDTO(category , categoryList))
+                .collect(Collectors.toList());
     }
 
+    private CategoryDTO mapCategoryToDTO(Category category, List<Category> categoryList) {
+        CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+
+        List<CategoryDTO> categoryDTOList = categoryList.stream()
+                .filter(child -> category.getId().equals(child.getParentId()))
+                .map(child -> mapCategoryToDTO(child,categoryList))
+                .collect(Collectors.toList());
+
+        categoryDTO.setCategoryDTOS(categoryDTOList);
+
+        return categoryDTO;
+    }
+
+
+
+
+    @Override
+    public List<CategoryDTO> getallrecursivestream() {
+
+        return  categoryRepository.findByParentIdIsFale().stream()
+                .map(category -> {
+                    List<CategoryDTO> categoryDTOS = new ArrayList<>();
+
+                    List<Category> categoryList = categoryRepository.findByParentId(category.getId());
+                    CategoryDTO categoryDTO = modelMapper.map(category , CategoryDTO.class);
+
+                    List<CategoryDTO>  categoryDTOList = new ArrayList<>();
+
+                    for (Category child : categoryList) {
+                        CategoryDTO childDTO = modelMapper.map(child, CategoryDTO.class);
+
+                        categoryDTOList.add(childDTO);
+                    }
+
+                    categoryDTO.setCategoryDTOS(categoryDTOList);
+                    categoryDTOS.add(categoryDTO);
+
+                    return categoryDTO;
+                }).collect(Collectors.toList());
+    }
 
 
 
@@ -123,11 +176,11 @@ public class CategoryServiceImpl  implements CategoryService {
             List<Category> categoryList = categoryRepository.findByParentId(category.getId());
 
             CategoryDTO categoryDTO = new CategoryDTO();
-
             categoryDTO.setId(category.getId());
             categoryDTO.setDescription(category.getDescription());
             categoryDTO.setName(category.getName());
             categoryDTO.setStatus(category.getStatus());
+
             List<CategoryDTO>  categoryDTOList = new ArrayList<>();
 
             for (Category child : categoryList) {
@@ -150,7 +203,10 @@ public class CategoryServiceImpl  implements CategoryService {
         return categoryDTOS;
     }
 
-    
+
+
+
+
 //    @Override
 //    public List<CategoryDTO> getRecursive(String name) {
 //

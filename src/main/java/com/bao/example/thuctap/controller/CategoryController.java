@@ -57,6 +57,13 @@ public class CategoryController {
         return  ResponseEntity.ok(categoryList);
     }
 
+    //Sử dụng stream
+    @GetMapping("/getallrecursivestream")
+    public ResponseEntity<List<CategoryDTO>> getallrecursivestream(){
+        List<CategoryDTO> categoryList = categoryService.getallrecursivestream();
+        return  ResponseEntity.ok(categoryList);
+    }
+
 
 
     //Phân trang sql lấy từ 6 - 10

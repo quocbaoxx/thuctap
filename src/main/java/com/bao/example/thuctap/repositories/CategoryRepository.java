@@ -67,7 +67,7 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
     List<Category> findByParentId(Integer parentId);
 
 
-    @Query(value = "SELECT c FROM Category c  where  c.parentId = null ")
+    @Query(value = "SELECT c FROM Category c  where  c.parentId = null ORDER BY  c.parentId   asc ")
     List<Category> findByParentIdIsFale();
 
     @Query(value = "SELECT * FROM tblcategory c  LIMIT :limit OFFSET :offset", nativeQuery = true)
