@@ -34,8 +34,11 @@ public interface CategoryService {
     List<CategoryDTO> getallrecursive();
     List<CategoryDTO> getallrecursivestream();
     List<CategoryDTO> getalldatabase();
+    List<CategoryDTO> getalldatabase1for();
 
     ResponseBase getPaginatedData( int limit, int offset);
 
     ResponseBase getpagination(int page, int size);
+
+    public List<CategoryDTO> getalldatabaseStream1();
 }

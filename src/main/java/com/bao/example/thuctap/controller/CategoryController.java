@@ -57,6 +57,17 @@ public class CategoryController {
         return  ResponseEntity.ok(categoryList);
     }
 
+    @GetMapping("/getalldatabase1for")
+    public ResponseEntity<List<CategoryDTO>> getalldatabase1for(){
+        List<CategoryDTO> categoryList = categoryService.getalldatabase1for();
+        return  ResponseEntity.ok(categoryList);}
+
+    @GetMapping("/getalldatabaseStream1")
+    public ResponseEntity<List<CategoryDTO>> getalldatabaseStream1(){
+        List<CategoryDTO> categoryList = categoryService.getalldatabaseStream1();
+        return  ResponseEntity.ok(categoryList);
+    }
+
     //Sử dụng stream
     @GetMapping("/getallrecursivestream")
     public ResponseEntity<List<CategoryDTO>> getallrecursivestream(){

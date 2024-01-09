@@ -32,6 +32,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "WHERE u.username = :username", nativeQuery = true)
     List<User> findByUserAndRoles(@Param("username") String username);
 
-
-
 }

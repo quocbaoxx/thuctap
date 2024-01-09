@@ -39,7 +39,6 @@ public class ContactServiceImpl implements ContactService {
                     swapped = true;
                 }
             }
-            n--;
         } while (swapped);
 
         return contacts;

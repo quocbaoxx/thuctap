@@ -81,52 +81,98 @@ public class CategoryServiceImpl  implements CategoryService {
 //        return categoryDTOS;
 //    }
 
+    @Override
+    public List<CategoryDTO> getalldatabase1for() {
+        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+        List<CategoryDTO> categoryList = categoryRepository.findAllSortParentId();
+
+        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();
+
+        List<CategoryDTO> temporaryList = new ArrayList<>();
+
+        for (CategoryDTO category : categoryList) {
+            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+
+            if (category.getParentId() == null) {
+                temporaryList.add(categoryDTO);
+                categoryDTO.setCategoryDTOS(categoryParent.computeIfAbsent(category.getId(), k -> new ArrayList<>()));
+            } else {
+                categoryParent.computeIfAbsent(category.getParentId(), k -> new ArrayList<>()).add(categoryDTO);
+            }
+        }
+
+        categoryDTOS.addAll(temporaryList);
+        return categoryDTOS;
 
 
-//     @Override
-//    public List<CategoryDTO> getalldatabase() {
-//        List<CategoryDTO> categoryDTOS = new ArrayList<>();
-//        List<Category> categoryList = categoryRepository.findAllSortParentId();
-//
-//        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();
-//
-//        List<CategoryDTO> temporaryList = new ArrayList<>();
-//
-//        for (Category category : categoryList) {
-//            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
-//            if (category.getParentId() == null) {
-//                temporaryList.add(categoryDTO);
-//            } else {
-////                if (!categoryParent.containsKey(category.getParentId())) {
-////                    categoryParent.put(category.getParentId(), new ArrayList<>());
-////                }
-////                categoryParent.get(category.getParentId()).add(categoryDTO);
+    }
+
+
+
+
+     @Override
+    public List<CategoryDTO> getalldatabase() {//1 vòng for
+        List<CategoryDTO> categoryDTOS = new ArrayList<>();
+        List<CategoryDTO> categoryList = categoryRepository.findAllSortParentId();
+
+        Map<Integer, List<CategoryDTO>> categoryParent = new HashMap<>();
+
+        List<CategoryDTO> temporaryList = new ArrayList<>();
+
+        for (CategoryDTO category : categoryList) {
+            CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+            if (category.getParentId() == null) {
+                temporaryList.add(categoryDTO);
+            } else {
+                if (!categoryParent.containsKey(category.getParentId())) {
+                    categoryParent.put(category.getParentId(), new ArrayList<>());
+                }//cần else
+                else {
+                    categoryParent.get(category.getParentId()).add(categoryDTO);
+                }
 //              categoryParent.computeIfAbsent(category.getParentId(), k -> new ArrayList<>()).add(categoryDTO);
-//            }
-//        }
-//        for (CategoryDTO categoryDTO : temporaryList) {
-//            categoryDTO.setCategoryDTOS(categoryParent.get(categoryDTO.getId()));
-//            categoryDTOS.add(categoryDTO);
-//        }
-//        return categoryDTOS;
-//    }
+            }
+        }
+        for (CategoryDTO categoryDTO : temporaryList) {
+            categoryDTO.setCategoryDTOS(categoryParent.get(categoryDTO.getId()));
+            categoryDTOS.add(categoryDTO);
+        }
+        return categoryDTOS;
+    }
+
+
 
 
     @Override
-    public List<CategoryDTO> getalldatabase() {
-        List<Category> categoryList = categoryRepository.findAllSortParentId();
+    public List<CategoryDTO> getalldatabaseStream1() {
+        List<CategoryDTO> categoryList = categoryRepository.findAllSortParentId();
 
         return categoryList.stream()
-                .filter(category -> category.getParentId() == null)
-                .map(category  -> mapCategoryToDTO(category , categoryList))
+//                .filter(category -> category.getParentId() == null)// 1 map 1 for
+                .map(category  -> {
+                    CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+                    for(CategoryDTO e : categoryList){
+                        if(e.getParentId() != null && e.getParentId().equals(category.getId())){
+                            CategoryDTO categoryDTOChild = modelMapper.map(e, CategoryDTO.class);
+                            categoryDTO.getCategoryDTOS().add(categoryDTOChild);
+                        }
+                    }
+                    return categoryDTO;
+                }
+//                        mapCategoryToDTO(category , categoryList)
+                )
                 .collect(Collectors.toList());
     }
 
+
+    //đệ quy gọi chính nó
     private CategoryDTO mapCategoryToDTO(Category category, List<Category> categoryList) {
         CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
 
+        //TODO: return DTO, bo map
+
         List<CategoryDTO> categoryDTOList = categoryList.stream()
-                .filter(child -> category.getId().equals(child.getParentId()))
+                .filter(child -> child.getParentId() != null && category.getId().equals(child.getParentId()))
                 .map(child -> mapCategoryToDTO(child,categoryList))
                 .collect(Collectors.toList());
 

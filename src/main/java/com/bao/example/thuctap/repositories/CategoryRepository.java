@@ -82,7 +82,13 @@ public interface CategoryRepository  extends JpaRepository<Category, Integer> {
     @Query(value = "SELECT COUNT(*) FROM tblcategory", nativeQuery = true)
     long countTotalCategories();
 
-    @Query("SELECT c FROM Category c " +
+//    @Query("SELECT c from  Category  c " +
+//            "order by c.parentId ,c.id")
+//    List<Category> findAllSortParentId();
+
+
+    @Query("SELECT new com.bao.example.thuctap.dto.CategoryDTO(c.id, c.name,c.status, c.description,c.parentId) " +
+            "FROM Category c " +
             "order by c.parentId ,c.id")
-    List<Category> findAllSortParentId();
+    List<CategoryDTO> findAllSortParentId();
 }

@@ -49,18 +49,18 @@ public class RoleServiceImpl  implements RoleService {
 
     public Integer delete(Role role) {
 
-//        if(isRoleLinkedToUser(role.getId())){
-//            throw  new IllegalStateException("Không xoá đc");
-//        }
+        if(isRoleLinkedToUser(role.getId())){
+            throw  new IllegalStateException("Không xoá đc");
+        }
         role.setStatus(Boolean.FALSE);
         Role deletedRole = roleRepository.save(role);
         return  deletedRole.getId();
 
     }
 
-//    public boolean isRoleLinkedToUser(Integer roleid) {
-//        return userRepository.existsByRoles_Id(roleid);
-//    }
+    public boolean isRoleLinkedToUser(Integer roleid) {
+        return userRoleRepository.existsByRoles_Id(roleid);
+    }
 
 
 
