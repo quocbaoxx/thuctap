@@ -33,6 +33,7 @@ public class CategoryServiceImpl  implements CategoryService {
         List<Category> categoryList =  categoryRepository.findWithPagination((page - 1) * size, size);
 
         return new ResponseBase(categoryList,categoryRepository.countTotalCategories());
+//        return  new ResponseBase(categoryList);
     }
 
 
